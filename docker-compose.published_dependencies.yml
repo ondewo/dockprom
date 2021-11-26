@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.8'
 
 networks:
   monitor-net:
@@ -25,7 +25,7 @@ services:
       - '--web.enable-lifecycle'
     restart: unless-stopped
     expose:
-      - 9090
+      - ${PROMETHEUS_PORT}
     networks:
       - monitor-net
     labels:
@@ -41,7 +41,7 @@ services:
       - '--storage.path=/alertmanager'
     restart: unless-stopped
     expose:
-      - 9093
+      - ${ALERT_MANAGER_PORT}
     networks:
       - monitor-net
     labels:
@@ -61,7 +61,7 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
     expose:
-      - 9100
+      - ${NODE_EXPORTER_PORT}
     networks:
       - monitor-net
     labels:
@@ -78,7 +78,7 @@ services:
       #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
     restart: unless-stopped
     expose:
-      - 8080
+      - ${CADVISOR_PORT}
     networks:
       - monitor-net
     labels:
@@ -97,7 +97,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     restart: unless-stopped
     expose:
-      - 3000
+      - ${GRAFANA_PORT}
     networks:
       - monitor-net
     labels:
@@ -108,7 +108,7 @@ services:
     container_name: pushgateway
     restart: unless-stopped
     expose:
-      - 9091
+      - ${PUSH_GATEWAY_PORT}
     networks:
       - monitor-net
     labels:
@@ -118,10 +118,10 @@ services:
     image: ${PROD_CADDY_IMAGE_NAME}
     container_name: caddy
     ports:
-      - "3000:3000"
-      - "9090:9090"
-      - "9093:9093"
-      - "9091:9091"
+      - "${GRAFANA_PORT}:3000"
+      - "${PROMETHEUS_PORT}:9090"
+      - "${ALERT_MANAGER_PORT}:9093"
+      - "${PUSH_GATEWAY_PORT}:9091"
     volumes:
       - ./caddy:/etc/caddy
     environment:

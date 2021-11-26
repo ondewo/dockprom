@@ -3,7 +3,7 @@ include packaging/example.env
 export
 
 start:
-	docker-compose up -d
+	docker-compose --env-file packaging/example.env up -d
 
 save_container_dependencies:
 	-mkdir container_dependencies

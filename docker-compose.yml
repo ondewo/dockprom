@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.8'
 
 networks:
   monitor-net:
@@ -11,7 +11,7 @@ volumes:
 services:
 
   prometheus:
-    image: prom/prometheus:v2.31.1
+    image: prom/prometheus:${PROMETHEUS_VERSION}
     container_name: prometheus
     volumes:
       - ./prometheus:/etc/prometheus
@@ -25,14 +25,14 @@ services:
       - '--web.enable-lifecycle'
     restart: unless-stopped
     expose:
-      - 9090
+      - ${PROMETHEUS_PORT}
     networks:
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
   alertmanager:
-    image: prom/alertmanager:v0.23.0
+    image: prom/alertmanager:${ALERT_MANAGER_VERSION}
     container_name: alertmanager
     volumes:
       - ./alertmanager:/etc/alertmanager
@@ -41,14 +41,14 @@ services:
       - '--storage.path=/alertmanager'
     restart: unless-stopped
     expose:
-      - 9093
+      - ${ALERT_MANAGER_PORT}
     networks:
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
   nodeexporter:
-    image: prom/node-exporter:v1.3.0
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION}
     container_name: nodeexporter
     volumes:
       - /proc:/host/proc:ro
@@ -61,14 +61,14 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
     expose:
-      - 9100
+      - ${NODE_EXPORTER_PORT}
     networks:
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.43.0
+    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION}
     container_name: cadvisor
     privileged: true
     devices:
@@ -81,14 +81,14 @@ services:
       #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
     restart: unless-stopped
     expose:
-      - 8080
+      - ${CADVISOR_PORT}
     networks:
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
   grafana:
-    image: grafana/grafana:8.2.5
+    image: grafana/grafana:${GRAFANA_VERSION}
     container_name: grafana
     volumes:
       - grafana_data:/var/lib/grafana
@@ -100,31 +100,31 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     restart: unless-stopped
     expose:
-      - 3000
+      - ${GRAFANA_PORT}
     networks:
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
   pushgateway:
-    image: prom/pushgateway:v1.4.2
+    image: prom/pushgateway:${PUSH_GATEWAY_VERSION}
     container_name: pushgateway
     restart: unless-stopped
     expose:
-      - 9091
+      - ${PUSH_GATEWAY_PORT}
     networks:
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
 
   caddy:
-    image: caddy:2.3.0
+    image: caddy:${CADDY_VERSION}
     container_name: caddy
     ports:
-      - "3000:3000"
-      - "9090:9090"
-      - "9093:9093"
-      - "9091:9091"
+      - "${GRAFANA_PORT}:3000"
+      - "${PROMETHEUS_PORT}:9090"
+      - "${ALERT_MANAGER_PORT}:9093"
+      - "${PUSH_GATEWAY_PORT}:9091"
     volumes:
       - ./caddy:/etc/caddy
     environment:
