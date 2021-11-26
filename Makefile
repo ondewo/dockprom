@@ -5,6 +5,9 @@ export
 start:
 	docker-compose --env-file packaging/example.env up -d
 
+stop:
+	docker-compose --env-file packaging/example.env down
+
 save_container_dependencies:
 	-mkdir container_dependencies
 	-rm container_dependencies/dependencies.tar.gz

@@ -12,7 +12,6 @@ services:
 
   prometheus:
     image: prom/prometheus:${PROMETHEUS_VERSION}
-    container_name: prometheus
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
@@ -33,7 +32,6 @@ services:
 
   alertmanager:
     image: prom/alertmanager:${ALERT_MANAGER_VERSION}
-    container_name: alertmanager
     volumes:
       - ./alertmanager:/etc/alertmanager
     command:
@@ -49,7 +47,6 @@ services:
 
   nodeexporter:
     image: prom/node-exporter:${NODE_EXPORTER_VERSION}
-    container_name: nodeexporter
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -69,7 +66,6 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION}
-    container_name: cadvisor
     privileged: true
     devices:
       - /dev/kmsg:/dev/kmsg
@@ -89,7 +85,6 @@ services:
 
   grafana:
     image: grafana/grafana:${GRAFANA_VERSION}
-    container_name: grafana
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
@@ -108,7 +103,6 @@ services:
 
   pushgateway:
     image: prom/pushgateway:${PUSH_GATEWAY_VERSION}
-    container_name: pushgateway
     restart: unless-stopped
     expose:
       - ${PUSH_GATEWAY_PORT}
@@ -119,7 +113,6 @@ services:
 
   caddy:
     image: caddy:${CADDY_VERSION}
-    container_name: caddy
     ports:
       - "${GRAFANA_PORT}:3000"
       - "${PROMETHEUS_PORT}:9090"
