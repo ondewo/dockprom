@@ -15,7 +15,7 @@ COPY packaging /home/ondewo_monitoring/packaging
 COPY container_dependencies /home/ondewo_monitoring/container_dependencies
 COPY config /home/ondewo_monitoring/
 COPY docker-compose.yml /home/ondewo_monitoring/
-COPY docker-compose.packaging.yml /home/ondewo_monitoring/
+COPY docker-compose.published_dependencies.yml /home/ondewo_monitoring/
 COPY docker-compose.exporters.yml /home/ondewo_monitoring/
 COPY README.md /home/ondewo_monitoring/
 COPY LICENSE /home/ondewo_monitoring/

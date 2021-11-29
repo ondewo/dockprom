@@ -11,7 +11,7 @@ volumes:
 services:
 
   prometheus:
-    image: ${PROD_PROMETHEUS_IMAGE_NAME}
+    image: ${EXTERNAL_PROMETHEUS_IMAGE_NAME}
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
@@ -31,7 +31,7 @@ services:
       org.label-schema.group: "monitoring"
 
   alertmanager:
-    image: ${PROD_ALERT_MANAGER_IMAGE_NAME}
+    image: ${EXTERNAL_ALERT_MANAGER_IMAGE_NAME}
     volumes:
       - ./alertmanager:/etc/alertmanager
     command:
@@ -46,7 +46,7 @@ services:
       org.label-schema.group: "monitoring"
 
   nodeexporter:
-    image: ${PROD_NODE_EXPORTER_IMAGE_NAME}
+    image: ${EXTERNAL_NODE_EXPORTER_IMAGE_NAME}
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -65,7 +65,7 @@ services:
       org.label-schema.group: "monitoring"
 
   cadvisor:
-    image: ${PROD_CADVISOR_IMAGE_NAME}
+    image: ${EXTERNAL_CADVISOR_IMAGE_NAME}
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -81,7 +81,7 @@ services:
       org.label-schema.group: "monitoring"
 
   grafana:
-    image: ${PROD_GRAFANA_IMAGE_NAME}
+    image: ${EXTERNAL_GRAFANA_IMAGE_NAME}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
@@ -99,7 +99,7 @@ services:
       org.label-schema.group: "monitoring"
 
   pushgateway:
-    image: ${PROD_PUSH_GATEWAY_IMAGE_NAME}
+    image: ${EXTERNAL_PUSH_GATEWAY_IMAGE_NAME}
     restart: unless-stopped
     expose:
       - ${PUSH_GATEWAY_PORT}
@@ -109,7 +109,7 @@ services:
       org.label-schema.group: "monitoring"
 
   caddy:
-    image: ${PROD_CADDY_IMAGE_NAME}
+    image: ${EXTERNAL_CADDY_IMAGE_NAME}
     ports:
       - "${GRAFANA_PORT}:3000"
       - "${PROMETHEUS_PORT}:9090"

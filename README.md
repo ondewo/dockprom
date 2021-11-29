@@ -372,29 +372,30 @@ To run the grafana container as `user: 104` change your `docker-compose.yml` lik
 
 Build the packaging image:
 ```bash
-make build_dev
+make save_container_dependencies
+make build_internal
 
 # or
-
-make build_prod
+make save_container_dependencies
+make build_external
 ```
 
 Publish the monitoring system in a docker registry:
 ```bash
-make publish_dev
+make publish_internal
 
 # or 
 
-make publish_prod
+make publish_external
 ```
 
 Install the monitoring system on another machine:
 ```bash
-make install_dev
+make install_internal
 
 # or
 
-make install_prod
+make install_external
 ```
 
 > Note: the installed folder will appear on the directory where you execute the command.
