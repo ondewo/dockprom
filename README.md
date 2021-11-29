@@ -85,7 +85,7 @@ The Docker Host Dashboard shows key metrics for monitoring the resource usage of
 * Swap usage and activity graphs
 
 For storage and particularly Free Storage graph, you have to specify the fstype in grafana graph request.
-You can find it in `grafana/dashboards/docker_host.json`, at line 480 :
+You can find it in `grafana/provisioning/dashboards/docker_host.json`, at line 480 :
 
 ```yaml
 "expr": "sum(node_filesystem_free_bytes{fstype=\"btrfs\"})",
@@ -366,4 +366,41 @@ To run the grafana container as `user: 104` change your `docker-compose.yml` lik
       - monitor-net
     labels:
       org.label-schema.group: "monitoring"
+```
+
+## Packaging the monitoring system
+
+Build the packaging image:
+```bash
+make save_container_dependencies
+make build_internal
+
+# or
+make save_container_dependencies
+make build_external
+```
+
+Publish the monitoring system in a docker registry:
+```bash
+make publish_internal
+
+# or 
+
+make publish_external
+```
+
+Install the monitoring system on another machine:
+```bash
+make install_internal
+
+# or
+
+make install_external
+```
+
+> Note: the installed folder will appear on the directory where you execute the command.
+
+Run the monitoring system:
+```bash
+docker-compose up -d
 ```

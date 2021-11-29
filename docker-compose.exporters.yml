@@ -1,9 +1,9 @@
-version: '2.1'
+version: '3.8'
 
 services:
 
   nodeexporter:
-    image: prom/node-exporter:v1.2.2
+    image: prom/node-exporter:v1.3.0
     container_name: nodeexporter
     volumes:
       - /proc:/host/proc:ro
@@ -20,11 +20,14 @@ services:
       org.label-schema.group: "monitoring"
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.40.0
+    image: gcr.io/cadvisor/cadvisor:v0.43.0
     container_name: cadvisor
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:rw
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /cgroup:/cgroup:ro

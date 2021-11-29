@@ -11,7 +11,7 @@ volumes:
 services:
 
   prometheus:
-    image: prom/prometheus:${PROMETHEUS_VERSION}
+    image: ${EXTERNAL_PROMETHEUS_IMAGE_NAME}
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
@@ -31,7 +31,7 @@ services:
       org.label-schema.group: "monitoring"
 
   alertmanager:
-    image: prom/alertmanager:${ALERT_MANAGER_VERSION}
+    image: ${EXTERNAL_ALERT_MANAGER_IMAGE_NAME}
     volumes:
       - ./alertmanager:/etc/alertmanager
     command:
@@ -46,7 +46,7 @@ services:
       org.label-schema.group: "monitoring"
 
   nodeexporter:
-    image: prom/node-exporter:${NODE_EXPORTER_VERSION}
+    image: ${EXTERNAL_NODE_EXPORTER_IMAGE_NAME}
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -65,13 +65,10 @@ services:
       org.label-schema.group: "monitoring"
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:${CADVISOR_VERSION}
-    privileged: true
-    devices:
-      - /dev/kmsg:/dev/kmsg
+    image: ${EXTERNAL_CADVISOR_IMAGE_NAME}
     volumes:
       - /:/rootfs:ro
-      - /var/run:/var/run:ro
+      - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker:/var/lib/docker:ro
       #- /cgroup:/cgroup:ro #doesn't work on MacOS only for Linux
@@ -84,7 +81,7 @@ services:
       org.label-schema.group: "monitoring"
 
   grafana:
-    image: grafana/grafana:${GRAFANA_VERSION}
+    image: ${EXTERNAL_GRAFANA_IMAGE_NAME}
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
@@ -102,7 +99,7 @@ services:
       org.label-schema.group: "monitoring"
 
   pushgateway:
-    image: prom/pushgateway:${PUSH_GATEWAY_VERSION}
+    image: ${EXTERNAL_PUSH_GATEWAY_IMAGE_NAME}
     restart: unless-stopped
     expose:
       - ${PUSH_GATEWAY_PORT}
@@ -112,7 +109,7 @@ services:
       org.label-schema.group: "monitoring"
 
   caddy:
-    image: caddy:${CADDY_VERSION}
+    image: ${EXTERNAL_CADDY_IMAGE_NAME}
     ports:
       - "${GRAFANA_PORT}:3000"
       - "${PROMETHEUS_PORT}:9090"
